@@ -11,20 +11,22 @@ const ProductDetail = () => {
     const product = useSelector(state => state.product)
     const { image, title, price, category, description } = product;
     // console.log(productId);
-    const fetchProducts = async ()=>{
-        const res = await axios.get(`https://fakestoreapi.com/products/${productId}`)
-        .catch(err=>{
-            console.log(err);
-        })
-        // console.log(res.data);
-        dispatch(selectedProduct(res.data))
-    }
+    
     // console.log(product);
-    useEffect(()=>{if(productId&&productId !== "")fetchProducts()
+    useEffect(()=>{if(productId&&productId !== ""){
+            (async ()=>{
+            const res = await axios.get(`https://fakestoreapi.com/products/${productId}`)
+            .catch(err=>{
+                console.log(err);
+            })
+            // console.log(res.data);
+            dispatch(selectedProduct(res.data))
+        })()
+    }
     return()=>{
         dispatch(removeSelectedProduct())
     }
-},[productId])
+},[productId,dispatch])
     return (
         <div className="ui grid container">
             {Object.keys(product).length === 0 ? (
@@ -40,7 +42,7 @@ const ProductDetail = () => {
                             <div className="column rp">
                                 <h1>{title}</h1>
                                 <h2>
-                                <a className="ui teal tag label">${price}</a>
+                                <span className="ui teal tag label">${price}</span>
                                 </h2>
                                 <h3 className="ui brown block header">{category}</h3>
                                 <p>{description}</p>
